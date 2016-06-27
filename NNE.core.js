@@ -1,32 +1,14 @@
-/**
- * Created by User on 17.07.2015.
- */
 "use strict";
-function NNEvolution() {
+function NNEvolution(paper) {
 
     var NNE = this;
     NNE.SPACE = 10;
     NNE.SCALE = {x: 40, y: 4};
-    NNE.paper = Raphael('NNE', 1, 1);
+    NNE.paper = paper;
     NNE.populations = window.populations;
+    //NNE.populationsNames = Object.keys(NNE.populations);
+    //NNE.currentPopulation = NNE.populationsNames[0];
     NNE.normalizeGap = function(g) {
-        /*if (g === undefined) {
-            g = {l:0, r:0, u:0, d:0, h:0, v:0};
-        } else if (!(g instanceof Object)) {
-            if (isNaN(g)) {
-                throw new Error("Gap has wrong type");
-            } else {
-                g = {l: g, r: g, u: g, d: g, h: g * 2, v: g * 2}
-            }
-        } else {
-            g.l = Math.max(g.l || 0, g.x || 0);
-            g.r = Math.max(g.r || 0, g.x || 0);
-            g.u = Math.max(g.u || 0, g.y || 0);
-            g.d = Math.max(g.d || 0, g.y || 0);
-            g.h = g.l + g.r;
-            g.v = g.u + g.d;
-        }
-        return g;*/ // OLD gap
         if (!g) {
             g = {l:0, r:0, u:0, d:0, h:0, v:0};
         } else if (!(g instanceof Object)) {
@@ -43,8 +25,6 @@ function NNEvolution() {
         }
         NNE.GAP = g;
         return g;
-        /*NNE.GAP = Math.min(NNE.SCALE.x, NNE.SCALE.y) / 2;
-        NNE.GAP = {x: NNE.GAP / NNE.SCALE.x, y: NNE.GAP / NNE.SCALE.y};*/
     };
     NNE.stretchPaper = function(w, h) {
         NNE.paper.setSize(
@@ -52,55 +32,6 @@ function NNEvolution() {
             Math.max(h + NNE.SPACE, NNE.paper.height)
         )
     };
-    /*NNE = {
-        SPACE: 10,
-        SCALE: {x: 40, y: 4},
-        normalizeGap: function(g) {
-            /!*if (g === undefined) {
-             g = {l:0, r:0, u:0, d:0, h:0, v:0};
-             } else if (!(g instanceof Object)) {
-             if (isNaN(g)) {
-             throw new Error("Gap has wrong type");
-             } else {
-             g = {l: g, r: g, u: g, d: g, h: g * 2, v: g * 2}
-             }
-             } else {
-             g.l = Math.max(g.l || 0, g.x || 0);
-             g.r = Math.max(g.r || 0, g.x || 0);
-             g.u = Math.max(g.u || 0, g.y || 0);
-             g.d = Math.max(g.d || 0, g.y || 0);
-             g.h = g.l + g.r;
-             g.v = g.u + g.d;
-             }
-             return g;*!/ // OLD gap
-            if (!g) {
-                g = {l:0, r:0, u:0, d:0, h:0, v:0};
-            } else if (!(g instanceof Object)) {
-                if (isNaN(g)) {
-                    throw new Error("Gap has wrong type");
-                } else {
-                    g = {l: g, r: g, u: g, d: g, h: g * 2, v: g * 2}
-                }
-            } else {
-                var f = function(a, b) { return Math.max(a || 0, b || 0); };
-                g = {l: f(g.l, g.x), r: f(g.r, g.x), u: f(g.u, g.y), d: f(g.d, g.y)};
-                g.h = g.l + g.r;
-                g.v = g.u + g.d;
-            }
-            this.GAP = g;
-            return g;
-            /!*NNE.GAP = Math.min(NNE.SCALE.x, NNE.SCALE.y) / 2;
-             NNE.GAP = {x: NNE.GAP / NNE.SCALE.x, y: NNE.GAP / NNE.SCALE.y};*!/
-        },
-        stretchPaper: function(w, h) {
-            this.paper.setSize(
-                Math.max(w + this.SPACE, this.paper.width),
-                Math.max(h + this.SPACE, this.paper.height)
-            )
-        },
-        paper: Raphael('NNE', 0, 0),
-        populations: window.populations
-    };*/
     NNE.normalizeGap(2);
 
     var toString = function self(o, deep) {
@@ -141,29 +72,6 @@ function NNEvolution() {
         ["#f0a","#a06","#f8d"], // cream
         ["#999","#666","#ccc"]
     ];
-    /*
-    [["#ghh","#ijj","#kll"],
-    ["#mno","#pqr","#stu"],
-    ["#mmo","#ppr","#ssu"],
-    ["#hgh","#jij","#lkl"],
-    ["#omn","#rpq","#ust"],
-    ["#onm","#rqp","#uts"],
-    ["#hhg","#jji","#llk"],
-    ["#nom","#qrp","#tus"],
-    ["#mon","#prq","#sut"]]
-    gh  ij  kl
-    d0  80  dl
-    mno pqr stu
-    fa0 aq0 fd8
-    */ // color pattern
-    /*var pickColor = function(i, j) {
-     //var c = ["6","7","8","a","d","f"];
-     var p = !!(i % 3);
-     var c = ["d0","80","d7","fa0","a60","fd8"][p * 3 + j];
-     c = c[0] + c[+!!(i - 2)] + c[p + 1];
-     p = 3 - (i / 3 ^ 0);
-     return "#" + c.slice(p, 3) + c.slice(0, p);
-     };*/ // pick color function
 
     function drawAll(p, filter, trees, plots, interactiveTrees, stroke, scale, gap) {
         var draw = function(gen) {
@@ -211,22 +119,6 @@ function NNEvolution() {
         var pickColor = function(i, n) {
             return n > 6 ? i : n > 3 ? (i * 3 + i % 2) / 2 : i * 3;
         };
-        /*function hex(x) {
-         if (x > 15 || x < 0) {
-         throw new Error(x + " is invalid argument for hex function");
-         } else if (x > 9) {
-         return String.fromCharCode(x + 55);
-         } else {
-         return x + "";
-         }
-         }
-         function pickColor(i, j, k) {
-         var s = "#" + hex(15 - i * 7) + hex(3 + j * 3) + hex(k * 5);
-         if (s.length !== 4) {
-         throw new Error("Color [" + i + "][" + j + "][" + k + "] = " + s + " is invalid");
-         }
-         return s;
-         }*/ // old hex & pick color functions
         for (var i = 0; i < groups.length; i++) {
             var groupStat = [];
             var found = false;
@@ -260,12 +152,6 @@ function NNEvolution() {
         var gridShift = {x: gap.l + NNE.SPACE, y: gap.u + NNE.paper.height};
         drawGrid(NNE.SPACE, NNE.paper.height, -1, 0, length, height / 10, stroke, scale, gap);
         for (i = 0; i < groups.length; i++) {
-            /*for (j = 0; j < groups[i].length; j++) {
-                for (var k = 0; k < paramsForComparing.length; k++) {
-                    drawStat(groups[i][j].stat[paramsForComparing[k]].a, gridShift.x, gridShift.y,
-                        height, scale, "curve", /!*pickColor(i, j, k)*!/ i ? i === 1 ? "#0f0" : "#00f" : "#f00", stroke * 2);
-                }
-            }*/ // OLD draw ALL plots function
             drawGroup(groups[i], paramsForComparing, gridShift.x, gridShift.y,
                 length, height, scale, pickColor(i, groups.length), stroke * 2,
                 (i - (groups.length - 1) / 2) * 3 /** paramsForComparing.length*/);
@@ -289,9 +175,6 @@ function NNEvolution() {
                 }
 
                 cA[i] = {}; // initializing children object
-                /*for (j = 0; j < gen.N; j++) {
-                 cA[i][j] = [];
-                 }*/ // initializing children array
 
                 for (var j = gen.N; j < gen.I[i].length; j += 3) {
                     var c = gen.I[i][j];
@@ -312,7 +195,6 @@ function NNEvolution() {
             }
             gen.parents = pA;
             gen.children = cA;
-            //return '\n\n, parents: ' + toString(pA, 1) + ', children: ' + toString(cA, 1);
         };
 
         var recountStat = function(gen) {
@@ -380,14 +262,6 @@ function NNEvolution() {
             for (i = 0; i < gen.I.length; i++) {
                 var sum = 0;
                 var p = [];
-                /*for (var key in gen.I[i]) {
-                 if (gen.I[i].hasOwnProperty(key)) {
-                 //points = Math.abs(+gen.I[i][key]);
-                 points = +gen.I[i][key];
-                 sum += points;
-                 p.push(points);
-                 }
-                 }*/ // OLD non-tape version
                 for (j = 0; j < gen.N; j++) {
                     points = +gen.I[i][j];
                     sum += points;
@@ -410,8 +284,6 @@ function NNEvolution() {
                 if (p[key].hasOwnProperty(i)) {
                     result += (result ? ",\n" : "\n") + i + ": " + toString(p[key][i], /*i === "stat" ? 2 :*/ 1);
                 }
-                /*'\n, stat: ' + toString(s, 2) + ' ';
-                '\n\n, parents: ' + toString(pA, 1) + ', children: ' + toString(cA, 1);*/ //LONG
             }
             return key + ": {" + result + "\n}";
         };
@@ -444,7 +316,6 @@ function NNEvolution() {
                     resultLog += (resultLog ? ",\n" : "") + comment + logData(key);
                     recountedTypes[p[key].type] = true;
                 }
-                /*console.log(key + ": " + toString());*/
             }
         } // recalculating statistic and tree data
         console.log(resultLog || "no populations has been recounted");
@@ -488,8 +359,6 @@ function NNEvolution() {
         var width = dx * scale.x + gap.h;
         var height = dy * scale.y + gap.v;
         NNE.stretchPaper(x + width, y + height);
-        //NNE.paper.setSize(Math.max(x + width + NNE.SPACE, NNE.paper.width), Math.max(y + height + NNE.SPACE, NNE.paper.height));
-        //var NNE.SPACE = 10;
         NNE.paper.rect(x - NNE.SPACE / 2, y - NNE.SPACE / 2, width + NNE.SPACE, height + NNE.SPACE);//.attr({stroke: "none", fill: "#f7f7f7"});]
         var color = ["#eee", "#ddd", "#bbb", "#848484", "#585858", "333"];
         var mod = [1, 5, 10, 50, 100, 500];
@@ -610,9 +479,6 @@ function NNEvolution() {
 
         var pickColor = function (s) {
             s += 30;
-            /*
-             for(var i=0;i<34;i++){NNE.paper.path(icons[4]).attr({fill:pickColor(i*5),stroke:"none"}).transform("T"+(i*8+4)+",8");}
-             */ // testing pickColor function
             return Raphael.hsb(
                 (s > 100 ? 120 : s > 90 ? (s - 70) * 4 : s > 80 ? (s - 50) * 2 : s > 40 ? s - 20 : s > 30 ? (s - 30) * 2 : 0) / 360,
                 .9, s > 160 ? .4 : s > 100 ? 2 - s / 100 : s > 30 ? 1 : s / 30);
@@ -723,9 +589,6 @@ function NNEvolution() {
         var height = 0;
         for (var key in gen.stat) {
             if (gen.stat.hasOwnProperty(key)) {
-                /*
-                var c = key === "min" || key === "max" ? 10 : 1;
-                */ // OLD min max coefficients
                 height = Math.max(height, gen.stat[key].h);
             }
         } // counting height
@@ -754,11 +617,6 @@ function NNEvolution() {
         drawPlotStat("max", 3); // green
         drawPlotStat("med", 9); // gray
         drawPlotStat("value", 6); // blue
-        /*drawPlotStat("min", "#b22", "#811");
-         drawPlotStat("mid", "#bb2", "#881");
-         drawPlotStat("max", "#4b2", "#281");
-         drawPlotStat("med", "#bbb", "#888");
-         drawPlotStat("value", "#24b", "#128");*/ // OLD string color variation
     }
 
     function drawGroup(group, params, x, y, length, height, scale, color, stroke, shift) {
@@ -823,62 +681,38 @@ function NNEvolution() {
         }
     };
 
+    NNE.attachSelectElement = function(selectElement) {
+        var profileNames = Object.keys(NNE.populations);
+        profileNames.forEach(function(name){
+            var newOption = document.createElement("option");
+            newOption.value = name;
+            newOption.textContent = name;
+            selectElement.appendChild(newOption);
+        });
+        selectElement.addEventListener("change", function(ev) {
+            var selectedPopulationName = selectElement.value;
+            NNE.paper.clear();
+            NNE.paper.setSize(1, 1);
+            NNE.stretchPaper(0, 0);
+            NNE.currentPopulation = selectedPopulationName;
+            NNE.drawCurrent();
+        }, false);
+        NNE.currentPopulation = profileNames[0]
+    };
+
     NNE.drawAll = function(filter, trees, plots, interactiveTrees) {
         drawAll(NNE.populations, filter, trees, plots, interactiveTrees, .5, NNE.SCALE, NNE.GAP);
+    };
+    NNE.drawCurrent = function(trees, plots, interactiveTrees) {
+        if (trees === undefined) trees = true;
+        if (plots === undefined) plots = true;
+        if (interactiveTrees === undefined) interactiveTrees = true;
+        NNE.drawAll(NNE.currentPopulation, trees, plots, interactiveTrees);
     };
     NNE.compare = function(groups, paramsForComparing, trees) {
         compare(NNE.populations, groups, paramsForComparing, trees, .5, NNE.SCALE, NNE.GAP);
     };
     NNE.recount = function(filter, replacement, forceRecount) {
         recount(NNE.populations, filter || "", replacement || "", forceRecount || false);
-    };
-
-    NNE.drawFunctions = function(limit, functions) {
-        drawGrid(4, 4, 0, 0, 3000, 200, 1, {x: 4, y: 4}, 0);
-        function drawStat(x, y, a, style, scale, divider, end, attr) {
-            attr["stroke"] = attr["stroke"] || "#000";
-            attr["stroke-width"] = attr["stroke-width"] || 1;
-            attr["stroke-linecap"] = "round";
-            attr["stroke-linejoin"] = "round";
-            var currentValue, lastValue;
-            for (var i = 0; i < end; i++) {
-                currentValue = a instanceof Array ? a[i] : a(i);
-                if (!i) {
-                    var path = "M" + x + "," + (y - currentValue * scale.y / divider);
-                } else {
-                    var deltaValue = (lastValue - currentValue) * scale.y / divider;
-                    if (style === "curve") {
-                        path += "c" + scale.x * .7 + ",0" +
-                            " " + scale.x * .3 + "," + deltaValue +
-                            " " + scale.x + "," + deltaValue;
-                    } else {
-                        path += "l" + scale.x + "," + deltaValue;
-                    }
-                }
-                lastValue = currentValue;
-            }
-            paper.path(path).attr(attr);
-        }
-        function drawMyStat(func, color, width) {
-            drawStat(4, 804, func, "non-curve", {x: 4, y: 4}, .01, 3000, {stroke: color, "stroke-width": width});
-        }
-        function dist(x) {
-            return .5 - Math.abs(.5 - (x % 1));
-        }
-        for (var i = 0; i < functions.length; i++) {
-            if (typeof functions[i] !== "function") {
-                !function(value){
-                    functions[i] = function(x) {
-                        return dist(x * value);
-                    };
-                }(functions[i]);
-            }
-            functions[i].limit = limit;
-            drawMyStat(functions[i], colors[i]);
-        }
-        //drawMyStat(function(i){return dist(i / 10)}, "#23b", 1);
-        //drawMyStat(function(i){return dist(cos * i / 10)}, "#b32", 2);
-        //drawMyStat(function(i){return dist(sin * i / 10)}, "#1a1", 2);
-        //drawMyStat(function(i){return dist(i / 10) + dist(cos * i / 10) + dist(sin * i / 10)}, "#000", 3);
     };
 }

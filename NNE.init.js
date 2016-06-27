@@ -1,26 +1,22 @@
-/**
- * Created by RenCa on 07.09.2015.
- */
-
-
 "use strict";
-var NNE = new NNEvolution;
+var paper = Raphael('NNE', 1, 1);
+var NNE = new NNEvolution(paper);
 NNE.populations = window.populations;
 NNE.stretchPaper(0, 0);
 NNE.recount("", "", false);
 
-
 NNE.SPACE = 10;
 NNE.SCALE = {x: 40, y: 4};
 NNE.normalizeGap(3);
-//                    [[2], [3], [5], [2, 3, 5]].map(function(c){return c.reduce(function(p, c){return p + Math.log(c)}, 0)});
-//NNE.drawFunctions(20, [Math.log(2),  Math.log(3), Math.log(5), Math.log(2) + Math.log(3) + Math.log(5)]);
-//NNE.drawFunctions(20, [1, .5,  Math.sin(Math.PI / 3), Math.sin(Math.PI / 3) + 1.5]);
+
+// initialize <select> element with population names:
+NNE.attachSelectElement(document.getElementById("select_data"));
+NNE.drawCurrent();
 
 //NNE.testColors();
 
     // population name/type , draw trees? , draw plots? , trees interactive?
-NNE.drawAll("test", true, true, true);
+//NNE.drawAll("test", true, true, true);
 
     // comparing names/types , comparing parameters , draw trees?
 //NNE.compare(["_020_13_00", "_020_23_00"], ["value", "max", "min"], false);
